@@ -1,0 +1,26 @@
+{
+  "name": "listercraft-ai",
+  "version": "1.0.0",
+  "description": "100% Local Open-Weights E-Commerce Listing Studio & Profit Margin Engine for Etsy, eBay, and Shopify Sellers powered by Google Gemma 2 (2B)",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 3000",
+    "dev": "npx serve . -l 3000"
+  },
+  "keywords": [
+    "ai",
+    "open-weights",
+    "gemma",
+    "gemma-2",
+    "ecommerce",
+    "etsy",
+    "ebay",
+    "shopify",
+    "reseller",
+    "side-hustle",
+    "local-ai",
+    "hacktoberfest"
+  ],
+  "author": "Ishita Singh (ish1416)",
+  "license": "MIT"
+}
