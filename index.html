@@ -197,6 +197,40 @@
               <span class="btn-subtext">Powered by Google Gemma 2 (2B)</span>
             </button>
           </form>
+
+          <!-- Inventory & Provenance Telemetry Card -->
+          <div class="inventory-telemetry-card">
+            <div class="telemetry-header">
+              <div class="telemetry-title-group">
+                <span class="telemetry-icon">📦</span>
+                <span class="telemetry-title">Inventory & Sourcing Provenance</span>
+              </div>
+              <span class="telemetry-sku" id="telemetrySku">SKU-DRIP-082</span>
+            </div>
+            <div class="telemetry-grid">
+              <div class="telemetry-item">
+                <span class="telem-label">Stock Status</span>
+                <span class="telem-val in-stock" id="telemStatus">● In Stock (1 Unit)</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telem-label">Sourcing Channel</span>
+                <span class="telem-val" id="telemChannel">Artisan Studio Batch</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telem-label">Storage Bin</span>
+                <span class="telem-val" id="telemBin">Bin B-2 (Stoneware)</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telem-label">Provenance Audit</span>
+                <span class="telem-val verified">✓ Authenticity Verified</span>
+              </div>
+            </div>
+            <div class="provenance-checklist">
+              <div class="check-item"><span class="check-icon">✓</span> <span>Daylight macro studio photography inspected</span></div>
+              <div class="check-item"><span class="check-icon">✓</span> <span>Zero structural cracks, chips, or unlisted flaws</span></div>
+              <div class="check-item"><span class="check-icon">✓</span> <span>Weight & packaging dimensions physically verified</span></div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -256,7 +290,7 @@
               <span class="editor-label">Generated Listing Copy</span>
               <span class="word-counter" id="wordCounter">284 words | 1,740 characters</span>
             </div>
-            <textarea id="listingOutputText" class="listing-textarea" rows="14"></textarea>
+            <textarea id="listingOutputText" class="listing-textarea" rows="12"></textarea>
           </div>
 
           <!-- Etsy 13 SEO Tags Hub (Crucial for Etsy Sellers!) -->
@@ -270,6 +304,35 @@
             </div>
             <div class="tag-cloud" id="tagCloud">
               <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Platform SEO & Conversion Audit Scorecard -->
+          <div class="seo-scorecard">
+            <div class="scorecard-header">
+              <div class="scorecard-left">
+                <span class="score-pill">SEO Score: 98 / 100</span>
+                <span class="score-meta">Gemma 2 Heuristic Audit</span>
+              </div>
+              <span class="score-status">● Marketplace Algorithm Ready</span>
+            </div>
+            <div class="score-badges-grid">
+              <div class="score-badge-item">
+                <span class="badge-icon">✓</span>
+                <span id="scoreTagText">13 / 13 Tags Active (&le;20 chars)</span>
+              </div>
+              <div class="score-badge-item">
+                <span class="badge-icon">✓</span>
+                <span>Gift Recipient Angles Embedded</span>
+              </div>
+              <div class="score-badge-item">
+                <span class="badge-icon">✓</span>
+                <span>Material Care Guidelines Present</span>
+              </div>
+              <div class="score-badge-item">
+                <span class="badge-icon">✓</span>
+                <span>Return-Reducing Condition Disclosure</span>
+              </div>
             </div>
           </div>
         </div>

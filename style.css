@@ -413,7 +413,7 @@ body.dark-theme {
   display: grid;
   grid-template-columns: 360px 1.4fr 390px;
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* Base Panel Styles */
@@ -426,6 +426,7 @@ body.dark-theme {
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow: hidden;
   transition: border-color 0.2s ease;
 }
@@ -478,7 +479,8 @@ body.dark-theme {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  flex: 1;
 }
 
 .media-preview-box {
@@ -621,6 +623,112 @@ body.dark-theme {
   font-size: 11px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.75);
+}
+
+/* Inventory & Provenance Telemetry Card */
+.inventory-telemetry-card {
+  margin-top: 6px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.telemetry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.telemetry-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.telemetry-icon {
+  font-size: 14px;
+}
+
+.telemetry-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--amber-glow);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.telemetry-sku {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--amber-glow);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.telem-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.telem-val {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.telem-val.in-stock {
+  color: #34d399;
+}
+
+.telem-val.verified {
+  color: #38bdf8;
+}
+
+.provenance-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.provenance-checklist .check-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.provenance-checklist .check-icon {
+  color: #34d399;
+  font-weight: 800;
+  font-size: 11px;
 }
 
 /* ==========================================================================
@@ -769,6 +877,7 @@ body.dark-theme {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex: 1;
 }
 
 .platform-meta-card {
@@ -813,6 +922,8 @@ body.dark-theme {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 1;
+  min-height: 250px;
 }
 
 .editor-header {
@@ -837,6 +948,8 @@ body.dark-theme {
 
 .listing-textarea {
   width: 100%;
+  flex: 1;
+  min-height: 220px;
   background: rgba(10, 12, 16, 0.8);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
@@ -940,6 +1053,70 @@ body.dark-theme {
   color: var(--amber-glow);
 }
 
+/* SEO Scorecard */
+.seo-scorecard {
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.scorecard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scorecard-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-pill {
+  background: #10b981;
+  color: #000;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.score-meta {
+  font-size: 11px;
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+.score-status {
+  font-size: 11px;
+  color: #34d399;
+  font-weight: 600;
+}
+
+.score-badges-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.score-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.score-badge-item .badge-icon {
+  color: #34d399;
+  font-weight: 800;
+}
+
 /* ==========================================================================
    Right Panel: Profit Margin & Fee Calculator
    ========================================================================== */
@@ -959,6 +1136,7 @@ body.dark-theme {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex: 1;
 }
 
 .calc-inputs-card {

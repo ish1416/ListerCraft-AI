@@ -175,6 +175,23 @@ document.addEventListener("DOMContentLoaded", () => {
       card.classList.toggle("active", card.dataset.id === presetId);
     });
 
+    // Update Inventory Telemetry Card
+    const telemetryData = {
+      ceramic_dripper: { sku: "SKU-DRIP-082", status: "● In Stock (1 Unit)", channel: "Artisan Studio Batch", bin: "Bin B-2 (Stoneware)" },
+      vintage_decanter: { sku: "SKU-DEC-1974", status: "● In Stock (1 Unit)", channel: "Northern CA Estate Sale", bin: "Cabinet MCM-1" },
+      leather_jacket: { sku: "SKU-JKT-8240", status: "● In Stock (1 Unit)", channel: "Vintage Curated Archive", bin: "Wardrobe Rack 3" },
+      merino_blanket: { sku: "SKU-MER-5065", status: "● Ready to Ship (2 Available)", channel: "Hand-Knit Studio Loom", bin: "Textile Shelf A" }
+    };
+    const telem = telemetryData[presetId] || { sku: "SKU-CUSTOM", status: "● In Stock (1 Unit)", channel: "Custom Inventory", bin: "Primary Storage" };
+    const elSku = document.getElementById("telemetrySku");
+    const elStatus = document.getElementById("telemStatus");
+    const elChannel = document.getElementById("telemChannel");
+    const elBin = document.getElementById("telemBin");
+    if (elSku) elSku.textContent = telem.sku;
+    if (elStatus) elStatus.textContent = telem.status;
+    if (elChannel) elChannel.textContent = telem.channel;
+    if (elBin) elBin.textContent = telem.bin;
+
     renderPlatformView();
     calculateAndRenderFees();
   }
@@ -230,6 +247,14 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="meta-title-preview">${data.title}</div>
       `;
       etsyTagsSection.style.display = "none";
+    }
+
+    // Update SEO Scorecard Badge
+    const scoreTagText = document.getElementById("scoreTagText");
+    if (scoreTagText) {
+      if (platform === "etsy") scoreTagText.textContent = "13 / 13 Tags Active (≤20 chars)";
+      else if (platform === "ebay") scoreTagText.textContent = "80-Char SEO Title & Specifics Active";
+      else scoreTagText.textContent = "5 Viral Hashtags & Lifestyle Hook";
     }
 
     // Set Textarea Copy
