@@ -136,15 +136,20 @@
             <img id="mainProductImage" src="assets/ceramic_dripper.jpg" alt="Product Preview">
             <div class="loupe-lens" id="loupeLens"></div>
             <div class="flaw-pins-container" id="flawPinsContainer"></div>
-            <div class="media-overlay">
-              <button type="button" class="loupe-toggle-btn" id="btnToggleLoupe" title="Toggle 2.5x Flaw Inspector Loupe">
-                <span>🔍 2.5x Flaw Loupe</span>
-              </button>
-              <label for="imageUploadInput" class="upload-badge-btn">
-                <span>📷 Upload Photo</span>
-              </label>
-              <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
-            </div>
+          </div>
+
+          <!-- Studio Image Action Toolbar -->
+          <div class="media-action-toolbar">
+            <button type="button" class="toolbar-action-btn upload-photo-btn" id="btnUploadPhoto">
+              <span class="btn-icon">📷</span>
+              <span>Upload Custom Photo</span>
+            </button>
+            <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
+            
+            <button type="button" class="toolbar-action-btn loupe-action-btn" id="btnToggleLoupe" title="Toggle 2.5x Flaw Inspector Loupe">
+              <span class="btn-icon">🔍</span>
+              <span id="loupeBtnText">2.5x Flaw Loupe</span>
+            </button>
           </div>
 
           <!-- Flaw & Condition Shield Bar -->

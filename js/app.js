@@ -30,7 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainProductImage = document.getElementById("mainProductImage");
   const mediaPreviewBox = document.getElementById("mediaPreviewBox");
   const loupeLens = document.getElementById("loupeLens");
+  const btnUploadPhoto = document.getElementById("btnUploadPhoto");
   const btnToggleLoupe = document.getElementById("btnToggleLoupe");
+  const loupeBtnText = document.getElementById("loupeBtnText");
   const flawPinsContainer = document.getElementById("flawPinsContainer");
   const flawTagsList = document.getElementById("flawTagsList");
   const btnAddFlawPin = document.getElementById("btnAddFlawPin");
@@ -453,14 +455,25 @@ document.addEventListener("DOMContentLoaded", () => {
     advisorBody.textContent = advice.body;
   }
 
+  // Upload Custom Photo Click Trigger
+  if (btnUploadPhoto && imageUploadInput) {
+    btnUploadPhoto.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      imageUploadInput.click();
+    });
+  }
+
   // Interactive 2.5x Flaw Loupe
   btnToggleLoupe.addEventListener("click", () => {
     state.loupeActive = !state.loupeActive;
     btnToggleLoupe.classList.toggle("active", state.loupeActive);
+    if (loupeBtnText) {
+      loupeBtnText.textContent = state.loupeActive ? "Loupe Active (ON)" : "2.5x Flaw Loupe";
+    }
     if (state.loupeActive) {
-      loupeLens.style.display = "block";
       loupeLens.style.backgroundImage = `url('${mainProductImage.src}')`;
-      showToast("2.5x Loupe active — Move cursor over product image");
+      showToast("2.5x Loupe active — Move cursor over product photo");
     } else {
       loupeLens.style.display = "none";
     }
