@@ -8,6 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const state = {
     currentPresetId: "ceramic_dripper",
     currentPlatform: "etsy",
+    currentTone: "artisan",
+    currentCurrency: "USD",
+    socialTheme: "dark",
+    loupeActive: false,
+    flaws: [
+      { id: 1, x: 64, y: 82, label: "Subtle micro crazing at unglazed base foot" }
+    ],
     specs: {},
     pricing: {
       sellingPrice: 38.00,
@@ -21,6 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
   const presetCards = document.querySelectorAll(".preset-card");
   const mainProductImage = document.getElementById("mainProductImage");
+  const mediaPreviewBox = document.getElementById("mediaPreviewBox");
+  const loupeLens = document.getElementById("loupeLens");
+  const btnToggleLoupe = document.getElementById("btnToggleLoupe");
+  const flawPinsContainer = document.getElementById("flawPinsContainer");
+  const flawTagsList = document.getElementById("flawTagsList");
+  const btnAddFlawPin = document.getElementById("btnAddFlawPin");
+
   const imageUploadInput = document.getElementById("imageUploadInput");
   const productForm = document.getElementById("productForm");
   const btnResetForm = document.getElementById("btnResetForm");
@@ -34,8 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const itemEraInput = document.getElementById("itemEra");
   const itemAudienceInput = document.getElementById("itemAudience");
 
-  // Platform & Output Elements
+  // Platform & Tone Elements
   const platformTabs = document.querySelectorAll(".platform-tab");
+  const toneChips = document.querySelectorAll(".tone-chip");
+  const currPills = document.querySelectorAll(".curr-pill");
   const platformMetaCard = document.getElementById("platformMetaCard");
   const listingOutputText = document.getElementById("listingOutputText");
   const wordCounter = document.getElementById("wordCounter");
@@ -89,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const advisorTitle = document.getElementById("advisorTitle");
   const advisorBody = document.getElementById("advisorBody");
+  const bundleTableBody = document.getElementById("bundleTableBody");
 
   // Export Buttons
   const btnExportCSV = document.getElementById("btnExportCSV");
@@ -96,13 +113,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnExportMarkdown = document.getElementById("btnExportMarkdown");
   const btnPrintQR = document.getElementById("btnPrintQR");
 
-  // Modals & Toast
+  // Modals & Navigation
   const btnFirstUser = document.getElementById("btnFirstUser");
   const btnHowItWorks = document.getElementById("btnHowItWorks");
   const caseStudyModal = document.getElementById("caseStudyModal");
   const architectureModal = document.getElementById("architectureModal");
   const btnCloseCaseStudy = document.getElementById("btnCloseCaseStudy");
   const btnCloseArch = document.getElementById("btnCloseArch");
+
+  // Batch Studio Elements
+  const btnOpenBatch = document.getElementById("btnOpenBatch");
+  const batchModal = document.getElementById("batchModal");
+  const btnCloseBatch = document.getElementById("btnCloseBatch");
+  const batchTotalItems = document.getElementById("batchTotalItems");
+  const batchGross = document.getElementById("batchGross");
+  const batchNet = document.getElementById("batchNet");
+  const batchAvgMargin = document.getElementById("batchAvgMargin");
+  const batchTableBody = document.getElementById("batchTableBody");
+  const btnExportBatchMasterCSV = document.getElementById("btnExportBatchMasterCSV");
+
+  // Social Story Studio Elements
+  const btnOpenSocialCard = document.getElementById("btnOpenSocialCard");
+  const socialCardModal = document.getElementById("socialCardModal");
+  const btnCloseSocialCard = document.getElementById("btnCloseSocialCard");
+  const socialCardPreviewImg = document.getElementById("socialCardPreviewImg");
+  const themeChoiceBtns = document.querySelectorAll(".theme-choice-btn");
+  const btnDownloadSocialCard = document.getElementById("btnDownloadSocialCard");
+
   const toastNotification = document.getElementById("toastNotification");
 
   // Show Toast Helper
@@ -143,6 +180,23 @@ document.addEventListener("DOMContentLoaded", () => {
       era: preset.era,
       audience: preset.audience
     };
+
+    // Preset Flaws
+    const defaultFlaws = {
+      ceramic_dripper: [
+        { id: 1, x: 62, y: 80, label: "Natural kiln iron speckling at rim" }
+      ],
+      vintage_decanter: [
+        { id: 1, x: 48, y: 34, label: "Flea-bite bubble inside stopper facet" }
+      ],
+      leather_jacket: [
+        { id: 1, x: 54, y: 62, label: "Natural aviator leather patina at left arm" }
+      ],
+      merino_blanket: [
+        { id: 1, x: 68, y: 48, label: "Hand-spun roving join marker (artisan signature)" }
+      ]
+    };
+    state.flaws = defaultFlaws[presetId] || [];
 
     // Populate inputs
     itemTitleInput.value = preset.name;
@@ -192,23 +246,62 @@ document.addEventListener("DOMContentLoaded", () => {
     if (elChannel) elChannel.textContent = telem.channel;
     if (elBin) elBin.textContent = telem.bin;
 
+    renderFlaws();
     renderPlatformView();
     calculateAndRenderFees();
   }
 
+  // Render Flaw Pins & Chips
+  function renderFlaws() {
+    flawPinsContainer.innerHTML = "";
+    flawTagsList.innerHTML = "";
+
+    state.flaws.forEach((flaw, idx) => {
+      // Pin on Image
+      const pin = document.createElement("div");
+      pin.className = "flaw-pin";
+      pin.style.left = `${flaw.x}%`;
+      pin.style.top = `${flaw.y}%`;
+      pin.innerHTML = `<span>${idx + 1}</span><div class="flaw-pin-tooltip">${flaw.label}</div>`;
+      flawPinsContainer.appendChild(pin);
+
+      // Flaw Chip
+      const chip = document.createElement("div");
+      chip.className = "flaw-tag-chip";
+      chip.innerHTML = `<span>#${idx + 1}: ${flaw.label}</span><button class="flaw-remove-btn" data-id="${flaw.id}">&times;</button>`;
+      flawTagsList.appendChild(chip);
+    });
+
+    // Add remove listeners
+    flawTagsList.querySelectorAll(".flaw-remove-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const id = parseInt(e.target.dataset.id, 10);
+        state.flaws = state.flaws.filter(f => f.id !== id);
+        renderFlaws();
+        showToast("Flaw pin removed from Return-Shield");
+      });
+    });
+  }
+
   // Sync Pricing Inputs
   function syncPricingInputs() {
+    const sym = window.feeCalculator.getSymbol();
     priceRange.value = state.pricing.sellingPrice;
     priceNumber.value = state.pricing.sellingPrice.toFixed(2);
-    priceBadge.textContent = `$${state.pricing.sellingPrice.toFixed(2)}`;
+    priceBadge.textContent = `${sym}${state.pricing.sellingPrice.toFixed(2)}`;
 
     cogsRange.value = state.pricing.cogs;
     cogsNumber.value = state.pricing.cogs.toFixed(2);
-    cogsBadge.textContent = `$${state.pricing.cogs.toFixed(2)}`;
+    cogsBadge.textContent = `${sym}${state.pricing.cogs.toFixed(2)}`;
 
     shippingRange.value = state.pricing.shipping;
     shippingNumber.value = state.pricing.shipping.toFixed(2);
-    shippingBadge.textContent = `$${state.pricing.shipping.toFixed(2)}`;
+    shippingBadge.textContent = `${sym}${state.pricing.shipping.toFixed(2)}`;
+
+    // Update currency symbols across input prefixes
+    document.querySelectorAll(".direct-number-input .currency-symbol").forEach(el => {
+      el.textContent = sym;
+    });
   }
 
   // Render Platform View (Etsy, eBay, Shopify)
@@ -285,11 +378,12 @@ document.addEventListener("DOMContentLoaded", () => {
     wordCounter.textContent = `${words} words | ${chars.toLocaleString()} characters`;
   }
 
-  // Calculate and Render Fees
+  // Calculate and Render Fees & Volume Bundles
   function calculateAndRenderFees() {
     const price = state.pricing.sellingPrice;
     const cogs = state.pricing.cogs;
     const shipping = state.pricing.shipping;
+    const sym = window.feeCalculator.getSymbol();
 
     const etsyRes = window.feeCalculator.calculateEtsy(price, cogs, shipping);
     const ebayRes = window.feeCalculator.calculateEbay(price, cogs, shipping);
@@ -303,36 +397,157 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Render Etsy Card
     etsyCutPct.textContent = `${etsyRes.feePctOfGross.toFixed(1)}% Total Fee`;
-    etsyGross.textContent = `$${etsyRes.gross.toFixed(2)}`;
-    etsyFees.textContent = `-$${etsyRes.totalFees.toFixed(2)}`;
-    etsyCosts.textContent = `-$${etsyRes.outlay.toFixed(2)}`;
-    etsyNet.textContent = `$${etsyRes.netProfit.toFixed(2)}`;
+    etsyGross.textContent = `${sym}${etsyRes.gross.toFixed(2)}`;
+    etsyFees.textContent = `-${sym}${etsyRes.totalFees.toFixed(2)}`;
+    etsyCosts.textContent = `-${sym}${etsyRes.outlay.toFixed(2)}`;
+    etsyNet.textContent = `${sym}${etsyRes.netProfit.toFixed(2)}`;
     etsyMargin.textContent = `${etsyRes.marginPct.toFixed(1)}% Margin`;
     etsyRoi.textContent = `${etsyRes.roiPct.toFixed(1)}% ROI`;
 
     // Render eBay Card
     ebayCutPct.textContent = `${ebayRes.feePctOfGross.toFixed(1)}% Total Fee`;
-    ebayGross.textContent = `$${ebayRes.gross.toFixed(2)}`;
-    ebayFees.textContent = `-$${ebayRes.totalFees.toFixed(2)}`;
-    ebayCosts.textContent = `-$${ebayRes.outlay.toFixed(2)}`;
-    ebayNet.textContent = `$${ebayRes.netProfit.toFixed(2)}`;
+    ebayGross.textContent = `${sym}${ebayRes.gross.toFixed(2)}`;
+    ebayFees.textContent = `-${sym}${ebayRes.totalFees.toFixed(2)}`;
+    ebayCosts.textContent = `-${sym}${ebayRes.outlay.toFixed(2)}`;
+    ebayNet.textContent = `${sym}${ebayRes.netProfit.toFixed(2)}`;
     ebayMargin.textContent = `${ebayRes.marginPct.toFixed(1)}% Margin`;
     ebayRoi.textContent = `${ebayRes.roiPct.toFixed(1)}% ROI`;
 
     // Render Shopify Card
     shopifyCutPct.textContent = `${shopifyRes.feePctOfGross.toFixed(1)}% Card Fee`;
-    shopifyGross.textContent = `$${shopifyRes.gross.toFixed(2)}`;
-    shopifyFees.textContent = `-$${shopifyRes.totalFees.toFixed(2)}`;
-    shopifyCosts.textContent = `-$${shopifyRes.outlay.toFixed(2)}`;
-    shopifyNet.textContent = `$${shopifyRes.netProfit.toFixed(2)}`;
+    shopifyGross.textContent = `${sym}${shopifyRes.gross.toFixed(2)}`;
+    shopifyFees.textContent = `-${sym}${shopifyRes.totalFees.toFixed(2)}`;
+    shopifyCosts.textContent = `-${sym}${shopifyRes.outlay.toFixed(2)}`;
+    shopifyNet.textContent = `${sym}${shopifyRes.netProfit.toFixed(2)}`;
     shopifyMargin.textContent = `${shopifyRes.marginPct.toFixed(1)}% Margin`;
     shopifyRoi.textContent = `${shopifyRes.roiPct.toFixed(1)}% ROI`;
+
+    // Volume Bundles
+    const bundles = window.feeCalculator.getBundleAnalysis(price, cogs, shipping);
+    if (bundleTableBody) {
+      bundleTableBody.innerHTML = `
+        <tr>
+          <td><strong>1-Unit</strong></td>
+          <td>${sym}${bundles.tier1.price.toFixed(2)}</td>
+          <td><strong style="color: #34d399;">${sym}${bundles.tier1.netProfit.toFixed(2)}</strong></td>
+          <td>${bundles.tier1.marginPct.toFixed(1)}%</td>
+        </tr>
+        <tr>
+          <td><strong>2-Pack Bundle</strong> <span class="bundle-savings-tag">${bundles.tier2.savings}</span></td>
+          <td>${sym}${bundles.tier2.price.toFixed(2)}</td>
+          <td><strong style="color: #34d399;">${sym}${bundles.tier2.netProfit.toFixed(2)}</strong></td>
+          <td>${bundles.tier2.marginPct.toFixed(1)}%</td>
+        </tr>
+        <tr>
+          <td><strong>4-Pack Collector</strong> <span class="bundle-savings-tag">${bundles.tier4.savings}</span></td>
+          <td>${sym}${bundles.tier4.price.toFixed(2)}</td>
+          <td><strong style="color: #34d399;">${sym}${bundles.tier4.netProfit.toFixed(2)}</strong></td>
+          <td>${bundles.tier4.marginPct.toFixed(1)}%</td>
+        </tr>
+      `;
+    }
 
     // Advisor Callout
     const advice = window.feeCalculator.getPricingAdvice(price, cogs, shipping, etsyRes);
     advisorTitle.textContent = advice.title;
     advisorBody.textContent = advice.body;
   }
+
+  // Interactive 2.5x Flaw Loupe
+  btnToggleLoupe.addEventListener("click", () => {
+    state.loupeActive = !state.loupeActive;
+    btnToggleLoupe.classList.toggle("active", state.loupeActive);
+    if (state.loupeActive) {
+      loupeLens.style.display = "block";
+      loupeLens.style.backgroundImage = `url('${mainProductImage.src}')`;
+      showToast("2.5x Loupe active — Move cursor over product image");
+    } else {
+      loupeLens.style.display = "none";
+    }
+  });
+
+  mediaPreviewBox.addEventListener("mousemove", (e) => {
+    if (!state.loupeActive) return;
+    const rect = mediaPreviewBox.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const lensRadius = 65; // 130px diameter
+    loupeLens.style.left = `${x - lensRadius}px`;
+    loupeLens.style.top = `${y - lensRadius}px`;
+
+    const zoom = 2.5;
+    const bgX = (x * zoom) - lensRadius;
+    const bgY = (y * zoom) - lensRadius;
+
+    loupeLens.style.backgroundSize = `${rect.width * zoom}px ${rect.height * zoom}px`;
+    loupeLens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+  });
+
+  mediaPreviewBox.addEventListener("mouseleave", () => {
+    if (state.loupeActive) {
+      loupeLens.style.display = "none";
+    }
+  });
+
+  mediaPreviewBox.addEventListener("mouseenter", () => {
+    if (state.loupeActive) {
+      loupeLens.style.display = "block";
+      loupeLens.style.backgroundImage = `url('${mainProductImage.src}')`;
+    }
+  });
+
+  // Add Flaw Pin Trigger
+  btnAddFlawPin.addEventListener("click", () => {
+    const flawDesc = prompt("Enter specific condition or flaw note to disclose for Return-Shield™ protection:", "Slight hairline surface rub on bottom underside");
+    if (flawDesc && flawDesc.trim()) {
+      const newFlaw = {
+        id: Date.now(),
+        x: 50,
+        y: 50,
+        label: flawDesc.trim()
+      };
+      state.flaws.push(newFlaw);
+      renderFlaws();
+      showToast("Flaw pin added to Return-Shield — Re-generating copy with disclosure");
+      
+      // Update listings with the new flaw transparency
+      const generated = window.gemmaEngine.generateAllListings(getFormSpecs(), state.flaws);
+      state.listingData = generated;
+      renderPlatformView();
+    }
+  });
+
+  // Tone Chip Clicks
+  toneChips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      toneChips.forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      state.currentTone = chip.dataset.tone;
+      window.gemmaEngine.setTone(state.currentTone);
+
+      // Re-generate copy with active persona
+      state.specs = getFormSpecs();
+      const generated = window.gemmaEngine.generateAllListings(state.specs, state.flaws);
+      state.listingData = generated;
+      renderPlatformView();
+      showToast(`Switched AI Voice to: ${chip.textContent.trim()}`);
+    });
+  });
+
+  // Currency Selector Pills
+  currPills.forEach(pill => {
+    pill.addEventListener("click", () => {
+      currPills.forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      const curr = pill.dataset.currency;
+      state.currentCurrency = curr;
+      window.feeCalculator.setCurrency(curr);
+      syncPricingInputs();
+      calculateAndRenderFees();
+      showToast(`Marketplace currency switched to ${curr}`);
+    });
+  });
 
   // Preset Card Clicks
   presetCards.forEach(card => {
@@ -359,6 +574,9 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.onload = (event) => {
         mainProductImage.src = event.target.result;
         presetCards.forEach(c => c.classList.remove("active"));
+        if (state.loupeActive) {
+          loupeLens.style.backgroundImage = `url('${event.target.result}')`;
+        }
         showToast("Custom photo loaded into Product Studio");
       };
       reader.readAsDataURL(file);
@@ -375,7 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnGenerate.querySelector(".btn-text").textContent = "Gemma 2 Generating...";
 
     setTimeout(() => {
-      const generated = window.gemmaEngine.generateAllListings(state.specs);
+      const generated = window.gemmaEngine.generateAllListings(state.specs, state.flaws);
       state.listingData = generated;
 
       renderPlatformView();
@@ -401,7 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const val = parseFloat(e.target.value);
     state.pricing.sellingPrice = val;
     priceNumber.value = val.toFixed(2);
-    priceBadge.textContent = `$${val.toFixed(2)}`;
+    priceBadge.textContent = `${window.feeCalculator.getSymbol()}${val.toFixed(2)}`;
     calculateAndRenderFees();
   });
 
@@ -409,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const val = Math.max(0, parseFloat(e.target.value) || 0);
     state.pricing.sellingPrice = val;
     priceRange.value = val;
-    priceBadge.textContent = `$${val.toFixed(2)}`;
+    priceBadge.textContent = `${window.feeCalculator.getSymbol()}${val.toFixed(2)}`;
     calculateAndRenderFees();
   });
 
@@ -417,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const val = parseFloat(e.target.value);
     state.pricing.cogs = val;
     cogsNumber.value = val.toFixed(2);
-    cogsBadge.textContent = `$${val.toFixed(2)}`;
+    cogsBadge.textContent = `${window.feeCalculator.getSymbol()}${val.toFixed(2)}`;
     calculateAndRenderFees();
   });
 
@@ -425,7 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const val = Math.max(0, parseFloat(e.target.value) || 0);
     state.pricing.cogs = val;
     cogsRange.value = val;
-    cogsBadge.textContent = `$${val.toFixed(2)}`;
+    cogsBadge.textContent = `${window.feeCalculator.getSymbol()}${val.toFixed(2)}`;
     calculateAndRenderFees();
   });
 
@@ -433,7 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const val = parseFloat(e.target.value);
     state.pricing.shipping = val;
     shippingNumber.value = val.toFixed(2);
-    shippingBadge.textContent = `$${val.toFixed(2)}`;
+    shippingBadge.textContent = `${window.feeCalculator.getSymbol()}${val.toFixed(2)}`;
     calculateAndRenderFees();
   });
 
@@ -441,7 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const val = Math.max(0, parseFloat(e.target.value) || 0);
     state.pricing.shipping = val;
     shippingRange.value = val;
-    shippingBadge.textContent = `$${val.toFixed(2)}`;
+    shippingBadge.textContent = `${window.feeCalculator.getSymbol()}${val.toFixed(2)}`;
     calculateAndRenderFees();
   });
 
@@ -505,7 +723,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast("Product Studio reset to default showcase");
   });
 
-  // Modal Triggers
+  // Modal: First Real User Case Study
   btnFirstUser.addEventListener("click", () => {
     caseStudyModal.classList.add("open");
   });
@@ -518,6 +736,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === caseStudyModal) caseStudyModal.classList.remove("open");
   });
 
+  // Modal: Architecture
   btnHowItWorks.addEventListener("click", () => {
     architectureModal.classList.add("open");
   });
@@ -530,11 +749,96 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === architectureModal) architectureModal.classList.remove("open");
   });
 
+  // Modal: Batch CSV Studio
+  btnOpenBatch.addEventListener("click", () => {
+    const metrics = window.batchProcessor.getAggregatedMetrics();
+    batchTotalItems.textContent = `${metrics.count} Items`;
+    batchGross.textContent = `$${metrics.totalGross.toFixed(2)}`;
+    batchNet.textContent = `$${metrics.totalNet.toFixed(2)}`;
+    batchAvgMargin.textContent = `${metrics.avgMargin.toFixed(1)}%`;
+
+    batchTableBody.innerHTML = window.batchProcessor.items.map(item => {
+      const fee = 0.20 + (item.price * 0.065) + (item.price * 0.03) + 0.25;
+      const net = item.price - fee - item.cogs - item.shipping;
+      const margin = (net / item.price) * 100;
+      return `
+        <tr>
+          <td><code>SKU-${item.id}</code></td>
+          <td><strong>${item.title}</strong></td>
+          <td>${item.category}</td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>$${item.cogs.toFixed(2)}</td>
+          <td>$${fee.toFixed(2)}</td>
+          <td><strong style="color: #34d399;">$${net.toFixed(2)}</strong></td>
+          <td>${margin.toFixed(1)}%</td>
+          <td><span style="color: #38bdf8;">● ${item.status}</span></td>
+        </tr>
+      `;
+    }).join("");
+
+    batchModal.classList.add("open");
+  });
+
+  btnCloseBatch.addEventListener("click", () => {
+    batchModal.classList.remove("open");
+  });
+
+  batchModal.addEventListener("click", (e) => {
+    if (e.target === batchModal) batchModal.classList.remove("open");
+  });
+
+  btnExportBatchMasterCSV.addEventListener("click", () => {
+    window.batchProcessor.exportMasterCSV();
+    showToast("Master Batch Catalog CSV exported!");
+  });
+
+  // Modal: Social Story & Viral Drop Studio
+  btnOpenSocialCard.addEventListener("click", () => {
+    renderSocialPreview();
+    socialCardModal.classList.add("open");
+  });
+
+  function renderSocialPreview() {
+    state.specs = getFormSpecs();
+    const copy = state.listingData.shopify ? state.listingData.shopify.copy : state.listingData.etsy.copy;
+    const dataUrl = window.socialCardGenerator.renderCard(state.specs, state.pricing, copy, state.socialTheme);
+    socialCardPreviewImg.src = dataUrl;
+  }
+
+  themeChoiceBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      themeChoiceBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.socialTheme = btn.dataset.style;
+      renderSocialPreview();
+    });
+  });
+
+  btnDownloadSocialCard.addEventListener("click", () => {
+    const a = document.createElement("a");
+    a.href = socialCardPreviewImg.src;
+    a.download = `listercraft_story_${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast("1080x1920 Story Card downloaded!");
+  });
+
+  btnCloseSocialCard.addEventListener("click", () => {
+    socialCardModal.classList.remove("open");
+  });
+
+  socialCardModal.addEventListener("click", (e) => {
+    if (e.target === socialCardModal) socialCardModal.classList.remove("open");
+  });
+
   // Escape key closes modals
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       caseStudyModal.classList.remove("open");
       architectureModal.classList.remove("open");
+      batchModal.classList.remove("open");
+      socialCardModal.classList.remove("open");
     }
   });
 

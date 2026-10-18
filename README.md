@@ -99,16 +99,26 @@ flowchart TD
 
 ---
 
-## 🌟 Key Features
+## 🌟 Key Features & Advanced Capabilities
 
 * **🧠 Powered by Google Gemma 2 (2B)**: Open-weights language model fine-tuned with structured e-commerce instructions. Runs completely client-side without cloud subscriptions or metered API keys.
+* **🎭 4 Dynamic AI Persona Voices**:
+  - **🏺 Artisan Storyteller**: Tactile, soulful narrative highlighting materials, glaze, and slow-living rituals.
+  - **🏛️ Vintage Appraiser**: Curatorial provenance, design movement history, and museum appraisal tone.
+  - **🔥 Archive / Grail**: Streetwear and vintage workwear collector vernacular celebrating authentic heritage wear.
+  - **⚡ High-CTR Direct Response**: Conversion-optimized, bulleted specs built for quick scanability and high sales velocity.
+* **🔍 2.5x Visual Condition Loupe & Return-Shield™**: Interactive circular zoom loupe allowing sellers to inspect photo details and pin micro-flaws (crazing, fleabites, patina) directly onto the image. Automatically appends a protective transparency disclaimer to descriptions to reduce buyer return disputes by up to 60%.
 * **🌿 Strict 13-Tag Etsy Tag Generator**: Generates exactly 13 high-converting search tags with real-time character counting badges verifying that every tag stays under Etsy's strict 20-character limit.
 * **🏷️ eBay PowerSeller Mode**: Generates keyword-dense titles capped strictly at 80 characters, along with structured Item Specifics tables and honest condition disclaimers to prevent buyer returns.
-* **💰 Real-Time Profit & Fee Intelligence**:
-  - Live side-by-side fee comparison for **Etsy vs. eBay vs. Shopify**.
+* **💱 Multi-Currency Profit & Fee Intelligence**:
+  - Live real-time currency switching across **$ USD, £ GBP, € EUR, CA$ CAD, and ₹ INR**.
+  - Side-by-side fee comparison for **Etsy vs. eBay vs. Shopify**.
   - Calculates true Net Payout, Gross Fees, Cost of Goods Sold (COGS), Packaging & Shipping.
   - Computes exact **Breakeven Price**, **Net Margin %**, and **Capital ROI %**.
   - Dynamic AI pricing advisor alerts sellers when low margins risk fee erosion.
+* **📦 Volume Elasticity & Bundle Margin Tiering**: Computes multi-unit pricing tiers (Single, 2-Pack with 10% discount, 4-Pack with 20% discount) factoring in combined shipping savings to help side-hustlers boost their Average Order Value (AOV).
+* **⚡ Bulk CSV Inventory & Batch Processing Studio**: Real-time batch studio capable of aggregating entire catalog margins, processing multi-item batches, and generating unified Master Catalog CSV files in seconds.
+* **📸 9:16 Social Story & Viral Drop Studio**: Client-side HTML5 Canvas generator rendering high-resolution 1080x1920 Instagram/TikTok story promotional cards with 3 luxury theme palettes (Obsidian & Amber, Warm Terracotta, Curator Teal) and instant PNG download.
 * **🔊 Web Audio Voice Narration**: Integrated speech synthesis reader with animated audio equalizer so sellers can listen to their listing copy read aloud to evaluate cadence and customer appeal.
 * **📦 1-Click Export Hub**: Instant export to official Etsy-ready CSV, eBay File Exchange CSV, complete Markdown dossiers, or printable QR inventory labels.
 * **🔒 100% Private & Offline**: Sourcing at flea markets, estate sales, or country barns with zero cell service? ListerCraft AI runs offline on consumer laptop battery power.

@@ -1,6 +1,6 @@
 /**
  * ListerCraft AI — Google Gemma 2 (2B) Multi-Platform AI Copy Engine
- * Local open-weights prompting, heuristic structuring, 13-tag Etsy generation, and Web Audio narration
+ * Local open-weights prompting, 4 personas, 13-tag Etsy generation, Flaw Pin return-shield, and Web Audio narration
  */
 
 class GemmaEngine {
@@ -9,28 +9,28 @@ class GemmaEngine {
     this.speechSynth = window.speechSynthesis || null;
     this.currentUtterance = null;
     this.isSpeaking = false;
+    this.currentTone = "artisan"; // artisan | appraiser | streetwear | conversion
   }
 
-  /**
-   * System instruction for conditioning Google Gemma 2 (2B) for e-commerce
-   */
+  setTone(tone) {
+    this.currentTone = tone;
+  }
+
   getSystemInstruction() {
     return `You are ListerCraft AI, an expert e-commerce copywriter and SEO engineer powered by Google Gemma 2 (2B).
 Your mission is to generate high-converting, platform-tailored product listings for independent artisans and vintage resellers.
+CURRENT PERSONA: ${this.currentTone.toUpperCase()}
 CONSTRAINTS:
 1. Etsy Mode: Evocative storytelling, craftsmanship details, gift recipient hooks, and exactly 13 tags (strictly <= 20 characters each).
 2. eBay Mode: Max 80-character SEO title, structured Item Specifics, transparent condition audit, and professional terms.
 3. Shopify/Social Mode: Sleek lifestyle brand copy, bulleted features, and 5 hashtags.
-4. Voice: Honest, descriptive, sensory, and devoid of repetitive buzzwords.`;
+4. Voice: Honest, descriptive, sensory, and tailored to the active persona.`;
   }
 
-  /**
-   * Generates listings for all 3 platforms based on input specs
-   */
-  generateAllListings(specs) {
-    const etsy = this.generateEtsy(specs);
-    const ebay = this.generateEbay(specs);
-    const shopify = this.generateShopify(specs);
+  generateAllListings(specs, flaws = []) {
+    const etsy = this.generateEtsy(specs, flaws);
+    const ebay = this.generateEbay(specs, flaws);
+    const shopify = this.generateShopify(specs, flaws);
 
     return {
       etsy,
@@ -39,16 +39,35 @@ CONSTRAINTS:
     };
   }
 
-  generateEtsy(specs) {
+  generateEtsy(specs, flaws = []) {
     const { title, category, condition, materials, dimensions, era, audience } = specs;
+    const tone = this.currentTone;
     
     // Construct rich title
     const cleanTitle = `${title} | Handmade Gift for ${audience.split(',')[0].trim()} | ${era}`;
-    
-    // Generate 13 Etsy Tags (strictly <= 20 characters)
     const tags = this.generateEtsyTags(specs);
 
-    const copy = `Immerse yourself in authentic craftsmanship with this ${condition.toLowerCase()} ${title.toLowerCase()}. Designed with thoughtful intention, this piece brings tactile warmth and artistic character into your daily living space.
+    let intro = "";
+    if (tone === "appraiser") {
+      intro = `A distinguished curation of ${era} design. This ${condition.toLowerCase()} ${title.toLowerCase()} exemplifies the sculptural material integrity of the movement. Examined with connoisseur attention, the work bridges timeless aesthetics with functional artistry.`;
+    } else if (tone === "streetwear") {
+      intro = `Certified archive grail. This ${title.toLowerCase()} delivers that authentic, broken-in character and heritage silhouette you simply cannot replicate with modern mass-production. A standout staple piece for collectors.`;
+    } else if (tone === "conversion") {
+      intro = `Upgrade your space with the original ${title.toLowerCase()}. Built with uncompromising premium ${materials}, this piece delivers unmatched daily durability, instant aesthetic elevation, and enduring artisan value.`;
+    } else {
+      // Default Artisan
+      intro = `Immerse yourself in authentic craftsmanship with this ${condition.toLowerCase()} ${title.toLowerCase()}. Designed with thoughtful intention, this piece brings tactile warmth and artistic character into your daily living space.`;
+    }
+
+    let flawDisclosure = "";
+    if (flaws && flaws.length > 0) {
+      flawDisclosure = `\n\n🔍 MACRO STUDIO INSPECTION & FLAW DISCLOSURE (Return-Shield Protocol):
+Inspected under 2.5x high-magnification studio lighting. The following authentic vintage/artisan details have been mapped:
+${flaws.map((f, i) => `- Point ${i + 1}: ${f.text}`).join("\n")}
+*100% Transparency Guarantee: You receive the exact piece photographed with full provenance.*`;
+    }
+
+    const copy = `${intro}
 
 Crafted with premium ${materials}, each detail reflects genuine studio dedication and enduring quality.
 
@@ -62,7 +81,7 @@ Crafted with premium ${materials}, each detail reflects genuine studio dedicatio
 Specially curated for ${audience}. Whether celebrating a birthday, milestone anniversary, housewarming, or treating yourself to a handcrafted heirloom, this piece arrives securely packed and gift-ready.
 
 🌿 CARE & LONGEVITY:
-To preserve the natural beauty of ${materials.split(',')[0].trim()}, gently wipe with a soft cloth or handwash with mild soap. Avoid harsh chemical cleaners.
+To preserve the natural beauty of ${materials.split(',')[0].trim()}, gently wipe with a soft cloth or handwash with mild soap. Avoid harsh chemical cleaners.${flawDisclosure}
 
 *Handmade with dedication. Each piece carries subtle authentic variations that celebrate true artisanal integrity.*`;
 
@@ -73,13 +92,23 @@ To preserve the natural beauty of ${materials.split(',')[0].trim()}, gently wipe
     };
   }
 
-  generateEbay(specs) {
+  generateEbay(specs, flaws = []) {
     const { title, category, condition, materials, dimensions, era } = specs;
+    const tone = this.currentTone;
 
-    // Strict eBay 80-character title limit
     let ebayTitle = `${title} ${era} ${condition}`.replace(/Handmade|Handcrafted/gi, "Artisan");
+    if (tone === "streetwear") {
+      ebayTitle = `VTG ${title} ${era} Rare Grail Archival ${condition}`;
+    }
     if (ebayTitle.length > 80) {
       ebayTitle = ebayTitle.substring(0, 77) + "...";
+    }
+
+    let flawSection = "";
+    if (flaws && flaws.length > 0) {
+      flawSection = `\n\nOPTICAL FLAW PIN AUDIT (ZERO-RETURN DISCLOSURE):
+${flaws.map((f, i) => `[Point #${i + 1}]: ${f.text}`).join("\n")}
+Item is sold as described with macro photo verification. Buyers can bid with complete confidence.`;
     }
 
     const copy = `ITEM SPECIFICS:
@@ -93,7 +122,7 @@ To preserve the natural beauty of ${materials.split(',')[0].trim()}, gently wipe
 ITEM CONDITION & PROVENANCE:
 You are bidding on / purchasing a meticulously inspected ${title}. 
 Condition is graded as: ${condition}. 
-Inspected under daylight studio photography. Free from structural compromises, unexpected damage, or unlisted alterations. Please review all high-resolution photos for exact micro-details and textures.
+Inspected under daylight studio photography. Free from structural compromises or unlisted alterations.${flawSection}
 
 SHIPPING & PACKAGING:
 - Ships within 1 business day with tracking.
@@ -115,10 +144,20 @@ SHIPPING & PACKAGING:
     };
   }
 
-  generateShopify(specs) {
+  generateShopify(specs, flaws = []) {
     const { title, materials, dimensions, era, audience } = specs;
+    const tone = this.currentTone;
 
-    const copy = `A refined essential for your everyday sanctuary. 
+    let headline = `A refined essential for your everyday sanctuary.`;
+    if (tone === "conversion") {
+      headline = `The ultimate fusion of enduring craft and modern functionality.`;
+    } else if (tone === "streetwear") {
+      headline = `Archival aesthetics. Timeless silhouette. Zero compromises.`;
+    } else if (tone === "appraiser") {
+      headline = `An exceptional artifact of the ${era} movement.`;
+    }
+
+    const copy = `${headline}
 
 The ${title} unites ${era.toLowerCase()} aesthetics with uncompromising material integrity. Formed from ${materials.toLowerCase()}, it delivers enduring beauty that grounds your environment.
 
@@ -137,9 +176,6 @@ Ships in eco-friendly biodegradable packaging. Backed by our 100% satisfaction g
     };
   }
 
-  /**
-   * Generates 13 strict Etsy SEO tags, ensuring every single tag is <= 20 chars
-   */
   generateEtsyTags(specs) {
     const { title, category, materials, era, audience } = specs;
     
@@ -173,7 +209,6 @@ Ships in eco-friendly biodegradable packaging. Backed by our 100% satisfaction g
       if (uniqueTags.length === 13) break;
     }
 
-    // Pad if fewer than 13
     const fallbacks = ["artisan made", "handcrafted piece", "curated design", "holiday gift"];
     while (uniqueTags.length < 13 && fallbacks.length > 0) {
       uniqueTags.push(fallbacks.shift());
@@ -182,9 +217,6 @@ Ships in eco-friendly biodegradable packaging. Backed by our 100% satisfaction g
     return uniqueTags.slice(0, 13);
   }
 
-  /**
-   * Read aloud using Web Speech API
-   */
   speakText(text, onStart, onEnd) {
     if (!this.speechSynth) {
       alert("Speech synthesis is not supported on this browser.");
@@ -193,7 +225,6 @@ Ships in eco-friendly biodegradable packaging. Backed by our 100% satisfaction g
 
     this.stopSpeaking();
 
-    // Clean text of markdown and bullets for pleasant speech
     const cleanSpeech = text
       .replace(/[#*_\-–—]/g, " ")
       .replace(/\s+/g, " ")
@@ -203,7 +234,6 @@ Ships in eco-friendly biodegradable packaging. Backed by our 100% satisfaction g
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
 
-    // Pick a natural English voice if available
     const voices = this.speechSynth.getVoices();
     const englishVoice = voices.find(v => v.lang.includes("en-US") && (v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Google")));
     if (englishVoice) {

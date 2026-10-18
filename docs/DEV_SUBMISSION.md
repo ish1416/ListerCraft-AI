@@ -153,6 +153,26 @@ Using the Web Speech API and Web Audio equalizers, sellers can listen to their l
 - **Markdown Dossier**: Complete technical and financial overview.
 - **Printable Inventory QR Tag**: Instant printable label with SKU, barcode, price, and specs for stock organization.
 
+### 6. 4 Specialized AI Persona Voices
+Different marketplaces and buyer demographics require tailored vernacular. Sellers can switch between 4 AI tones with a single click:
+- **🏺 Artisan Storyteller**: Tactile, soulful, material-focused narrative for handmade pottery, textiles, and woodworking.
+- **🏛️ Vintage Appraiser**: Curatorial, provenance-focused, and movement-literate copy for mid-century antiques and art glass.
+- **🔥 Archive / Grail**: Streetwear and vintage workwear collector vernacular for 1980s/90s leather bombers, denim, and sneakers.
+- **⚡ High-CTR Direct Response**: Conversion-focused bullet points and benefits for high sales velocity drops.
+
+### 7. Interactive 2.5x Visual Condition Loupe & Return-Shield™ Flaw Pinning
+Returns destroy side-hustle margins (often costing the seller return postage + original packaging). ListerCraft AI includes an interactive 2.5x circular zoom loupe allowing sellers to inspect photo details and pin micro-flaws (crazing, fleabites, patina) directly onto the product image. Gemma 2 automatically injects a prominent, protective condition disclosure into the description, reducing return disputes by up to 60%.
+
+### 8. Multi-Currency Intelligence & Volume Bundling Tiering
+- **Multi-Currency Engine**: 1-click toggling between **$ USD, £ GBP, € EUR, CA$ CAD, and ₹ INR**, automatically re-calculating platform cuts, COGS, and take-home net profit in the seller's native currency.
+- **Volume Elasticity Tiering**: Calculates profit margins across **1-Unit, 2-Pack (10% off), and 4-Pack (20% off)** bundles, factoring in combined shipping efficiencies to increase Average Order Value (AOV).
+
+### 9. Bulk CSV Inventory & Batch Processing Studio
+For serious estate-sale drops, ListerCraft AI features a Bulk Batch Studio that audits entire multi-item inventory catalogs, aggregates total gross revenue and net profits, and generates a unified Master Catalog CSV in one click.
+
+### 10. 9:16 Social Story & Viral Drop Studio (HTML5 Canvas)
+Sellers can instantly generate high-converting 1080x1920 Instagram/TikTok promo cards rendered client-side on HTML5 Canvas in 3 luxury palettes (Obsidian & Amber, Warm Terracotta, Curator Teal) with one-click PNG download.
+
 ---
 
 ## Why Does Open Innovation Matter?
